@@ -71,6 +71,14 @@ if ($link_request=="/"){
 $mydomain = str_replace("www.", "", $_SERVER['HTTP_HOST']);
 $username=file_get_contents("username.txt");
 
+//Redirect if we are using www.
+if ($mydomain!=$_SERVER['HTTP_HOST']){
+	$redirect = 'https://' . $mydomain . $_SERVER['REQUEST_URI'];
+	header('HTTP/1.1 301 Moved Permanently');
+	header('Location: ' . $redirect);
+	exit();
+}
+
 //The URL to request
 $url = 'https://'.$username.'.1mb.site' . $link_request;
 
