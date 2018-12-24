@@ -37,6 +37,7 @@ if(empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "off"){
 }
 
 if (isset($_GET["rules"])){
+	header("Content-Type: text/plain");
 	if ($_GET["rules"]=="ssl"){
 		if (has_ssl($_SERVER['HTTP_HOST'])==true){
 			echo "true";
