@@ -124,7 +124,7 @@ if ($mydomain!=$_SERVER['HTTP_HOST']){
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 if (file_exists("cache_static_".$cachecode."_timestamp.txt")){
 	$cachetime=file_get_contents("cache_static_".$cachecode."_timestamp.txt");
-	$checktime=(time()-(60*30));
+	$checktime=(time()-(60*5));
 	if ($checktime<=$cachetime){
 		//Cache is good to use
 		$usecache=true;
