@@ -1,5 +1,10 @@
 Options -indexes
 
+<FilesMatch "\.(htaccess|htpasswd|ini|ruleconf|log|sh)$">
+Order Allow,Deny
+Deny from all
+</FilesMatch>
+
 <IfModule mod_rewrite.c>
 	RewriteEngine On
 	RewriteBase /
