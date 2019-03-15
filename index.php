@@ -157,7 +157,7 @@ if (isset($_GET["api"])){
 			$oldtoken = !empty($_GET["oldtoken"]) ? strtolower($_GET["oldtoken"]) : false;
 			if ($oldtoken==$proxcode){
 				$token = !empty($_GET["token"]) ? strtolower($_GET["token"]) : false;
-				file_put_contents("proxy_authtoken.ruleconf", $username);
+				file_put_contents("proxy_authtoken.ruleconf", $token);
 				$return="updated";
 			}else{
 				$return="authfail";
