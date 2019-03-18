@@ -165,7 +165,7 @@ if (isset($_GET["api"])){
 		if ($_GET["api"]=="set_proxy_authtoken"){
 			if (!file_exists("proxy_authtoken.ruleconf")){
 				$token = !empty($_GET["token"]) ? strtolower($_GET["token"]) : false;
-				file_put_contents("proxy_authtoken.ruleconf", $username);
+				file_put_contents("proxy_authtoken.ruleconf", $token);
 				$return="set";
 			}else{
 				$proxcode=file_get_contents("proxy_authtoken.ruleconf");
