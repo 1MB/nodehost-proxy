@@ -43,6 +43,19 @@ function has_ssl($domain) {
 	}
 	return $res;
 }
+function canmakechange(){
+	if (file_exists("proxy_authtoken.ruleconf")){
+		$proxcode=file_get_contents("proxy_authtoken.ruleconf");
+		$oldtoken = !empty($_GET["authtoken"]) ? strtolower($_GET["authtoken"]) : false;
+		if ($oldtoken==$proxcode){
+			return true;
+		}else{
+			return false;
+		}
+	}else{
+		return true;
+	}
+}
 function curlResponseHeaderCallback($ch, $headerLine) {
     if (preg_match('/^Set-Cookie:\s*([^;]*)/mi', $headerLine, $cookie) == 1){
 		if (strpos($cookie[1], 'flarum') !== false) {
@@ -96,83 +109,88 @@ if (isset($_GET["api"])){
 	//Custom rules selector for 1mbsite panel
 	header("Content-Type: text/plain");
 	$return="error";
-	if ($_GET["api"]=="check_active_ssl"){
-		if (has_ssl($_SERVER['HTTP_HOST'])==true){
-			$return="true";
-		}else{
-			$return="false";
-		}
-	}
-	if ($_GET["api"]=="get_proxy_version"){
-		if (!file_exists("proxy_version.ruleconf")){
-			$return="1.0.0";
-		}else{
-			$return=file_get_contents("proxy_version.ruleconf");
-		}
-	}
-	if ($_GET["api"]=="get_proxy_username"){
-		if (!file_exists("proxy_username.ruleconf")){
-			$return="false";
-		}else{
-			$return=file_get_contents("proxy_username.ruleconf");
-		}
-	}
-	if ($_GET["api"]=="get_proxy_rules_wwwredirect"){
-		if (!file_exists("proxy_rules_wwwredirect.ruleconf")){
-			$return="false";
-		}else{
-			$return=file_get_contents("proxy_rules_wwwredirect.ruleconf");
-		}
-	}
-	if ($_GET["api"]=="get_proxy_rules_cache"){
-		if (!file_exists("proxy_rules_cache.ruleconf")){
-			$return="true";
-		}else{
-			$return=file_get_contents("proxy_rules_cache.ruleconf");
-		}
-	}
-	if ($_GET["api"]=="get_proxy_authtoken"){
-		if (!file_exists("proxy_authtoken.ruleconf")){
-			$return="false";
-		}else{
-			$return="true";
-		}
-	}
-	if ($_GET["api"]=="set_proxy_username"){
-		if (!file_exists("proxy_username.ruleconf")){
-			$username = !empty($_GET["username"]) ? strtolower($_GET["username"]) : false;
-			file_put_contents("proxy_username.ruleconf", $username);
-			$return="set";
-		}else{
-			$return="alreay_set";
-		}
-	}
-	if ($_GET["api"]=="set_proxy_authtoken"){
-		if (!file_exists("proxy_authtoken.ruleconf")){
-			$token = !empty($_GET["token"]) ? strtolower($_GET["token"]) : false;
-			file_put_contents("proxy_authtoken.ruleconf", $username);
-			$return="set";
-		}else{
-			$proxcode=file_get_contents("proxy_authtoken.ruleconf");
-			$oldtoken = !empty($_GET["oldtoken"]) ? strtolower($_GET["oldtoken"]) : false;
-			if ($oldtoken==$proxcode){
-				$token = !empty($_GET["token"]) ? strtolower($_GET["token"]) : false;
-				file_put_contents("proxy_authtoken.ruleconf", $token);
-				$return="updated";
+
+	if (canmakechange()==true){
+		if ($_GET["api"]=="check_active_ssl"){
+			if (has_ssl($_SERVER['HTTP_HOST'])==true){
+				$return="true";
 			}else{
-				$return="authfail";
+				$return="false";
 			}
 		}
-	}
-	if ($_GET["api"]=="set_proxy_rules_wwwredirect"){
-		$rule = !empty($_GET["rule"]) ? strtolower($_GET["rule"]) : false;
-		file_put_contents("proxy_rules_wwwredirect.ruleconf", $rule);
-		$return="set";
-	}
-	if ($_GET["api"]=="set_proxy_rules_cache"){
-		$rule = !empty($_GET["rule"]) ? strtolower($_GET["rule"]) : false;
-		file_put_contents("proxy_rules_cache.ruleconf", $rule);
-		$return="set";
+		if ($_GET["api"]=="get_proxy_version"){
+			if (!file_exists("proxy_version.ruleconf")){
+				$return="1.0.0";
+			}else{
+				$return=file_get_contents("proxy_version.ruleconf");
+			}
+		}
+		if ($_GET["api"]=="get_proxy_username"){
+			if (!file_exists("proxy_username.ruleconf")){
+				$return="false";
+			}else{
+				$return=file_get_contents("proxy_username.ruleconf");
+			}
+		}
+		if ($_GET["api"]=="get_proxy_rules_wwwredirect"){
+			if (!file_exists("proxy_rules_wwwredirect.ruleconf")){
+				$return="false";
+			}else{
+				$return=file_get_contents("proxy_rules_wwwredirect.ruleconf");
+			}
+		}
+		if ($_GET["api"]=="get_proxy_rules_cache"){
+			if (!file_exists("proxy_rules_cache.ruleconf")){
+				$return="true";
+			}else{
+				$return=file_get_contents("proxy_rules_cache.ruleconf");
+			}
+		}
+		if ($_GET["api"]=="get_proxy_authtoken"){
+			if (!file_exists("proxy_authtoken.ruleconf")){
+				$return="false";
+			}else{
+				$return="true";
+			}
+		}
+		if ($_GET["api"]=="set_proxy_username"){
+			if (!file_exists("proxy_username.ruleconf")){
+				$username = !empty($_GET["username"]) ? strtolower($_GET["username"]) : false;
+				file_put_contents("proxy_username.ruleconf", $username);
+				$return="set";
+			}else{
+				$return="alreay_set";
+			}
+		}
+		if ($_GET["api"]=="set_proxy_authtoken"){
+			if (!file_exists("proxy_authtoken.ruleconf")){
+				$token = !empty($_GET["token"]) ? strtolower($_GET["token"]) : false;
+				file_put_contents("proxy_authtoken.ruleconf", $username);
+				$return="set";
+			}else{
+				$proxcode=file_get_contents("proxy_authtoken.ruleconf");
+				$oldtoken = !empty($_GET["oldtoken"]) ? strtolower($_GET["oldtoken"]) : false;
+				if ($oldtoken==$proxcode){
+					$token = !empty($_GET["token"]) ? strtolower($_GET["token"]) : false;
+					file_put_contents("proxy_authtoken.ruleconf", $token);
+					$return="updated";
+				}else{
+					$return="authfail";
+				}
+			}
+		}
+		if ($_GET["api"]=="set_proxy_rules_wwwredirect"){
+			$rule = !empty($_GET["rule"]) ? strtolower($_GET["rule"]) : false;
+			file_put_contents("proxy_rules_wwwredirect.ruleconf", $rule);
+			$return="set";
+		}
+		if ($_GET["api"]=="set_proxy_rules_cache"){
+			$rule = !empty($_GET["rule"]) ? strtolower($_GET["rule"]) : false;
+			file_put_contents("proxy_rules_cache.ruleconf", $rule);
+			$return="set";
+		}
+	}else{
+		$return="authfail";
 	}
 	echo $return;
 	exit();
