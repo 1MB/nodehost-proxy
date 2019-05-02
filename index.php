@@ -248,16 +248,46 @@ if(empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "off"){
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Redirect away from www
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-if ($mydomain!=$_SERVER['HTTP_HOST']){
-	if (file_exists("proxy_rules_wwwredirect.ruleconf")){
-		$ruleis=file_get_contents("proxy_rules_wwwredirect.ruleconf");
-		if ($ruleis=="true"){
-			$redirect = 'https://' . $mydomain . $_SERVER['REQUEST_URI'];
+//if ($mydomain!=$_SERVER['HTTP_HOST']){
+//	if (file_exists("proxy_rules_wwwredirect.ruleconf")){
+//		$ruleis=file_get_contents("proxy_rules_wwwredirect.ruleconf");
+//		if ($ruleis=="true"){
+//			$redirect = 'https://' . $mydomain . $_SERVER['REQUEST_URI'];
+//			header('HTTP/1.1 301 Moved Permanently');
+//			header('Location: ' . $redirect);
+//			exit();
+//		}
+//	}
+//}
+
+if (file_exists("proxy_rules_wwwredirect.ruleconf")){
+	$ruleis=file_get_contents("proxy_rules_wwwredirect.ruleconf");
+
+	//If value FALSE ignore
+	if ($ruleis=="false"){
+		//Nothing to do....
+	}
+
+	//Redirect to www version
+	if ($ruleis=="www"){
+		if ("www.".$mydomain.""!=$_SERVER['HTTP_HOST']){
+			$redirect = 'http://www.' . $mydomain . $_SERVER['REQUEST_URI'];
 			header('HTTP/1.1 301 Moved Permanently');
 			header('Location: ' . $redirect);
 			exit();
 		}
 	}
+
+	//Redirect to root
+	if ($ruleis=="root"){
+		if ($mydomain!=$_SERVER['HTTP_HOST']){
+			$redirect = 'http://' . $mydomain . $_SERVER['REQUEST_URI'];
+			header('HTTP/1.1 301 Moved Permanently');
+			header('Location: ' . $redirect);
+			exit();
+		}
+	}
+
 }
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
